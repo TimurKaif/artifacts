@@ -4,15 +4,15 @@ services:
     container_name: myapp-dev
     working_dir: /app
     volumes:
-      - .:/app                        # исходники с хоста
-      - go-mod-cache:/go/pkg/mod      # кэш зависимостей (чтобы не качать каждый раз)
-      - go-build-cache:/root/.cache/go-build  # кэш сборки
+      - .:/app
+      - go-mod-cache:/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
     ports:
       - "8080:8080"
     environment:
       - CGO_ENABLED=0
       - GOOS=linux
-    command: go run ./cmd/server/main.go
+    command: sh -c "apk add --no-cache ca-certificates && go run ./cmd/server/main.go"
 
 volumes:
   go-mod-cache:
