@@ -7,12 +7,14 @@ services:
       - .:/app
       - go-mod-cache:/go/pkg/mod
       - go-build-cache:/root/.cache/go-build
-    ports:
-      - "8080:8080"
+    env_file:
+      - .env
     environment:
       - CGO_ENABLED=0
       - GOOS=linux
-    command: sh -c "apk add --no-cache ca-certificates && go run ./cmd/server/main.go"
+    command: sh -c "apk add --no-cache ca-certificates && tail -f /dev/null"
+    stdin_open: true
+    tty: true
 
 volumes:
   go-mod-cache:
