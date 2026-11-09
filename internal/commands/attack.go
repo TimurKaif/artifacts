@@ -9,12 +9,17 @@ func (e *Executor) Attack(participants []string) {
 		fmt.Println("Атакую монстра на текущей карте...")
 	}
 
-	result, err := e.client.Attack(participants)
+	resp, err := e.client.Attack(participants)
 	if err != nil {
-		fmt.Printf("Ошибка атаки: %v\n", err)
+		e.handleError(err)
 		return
 	}
 
-	fmt.Printf("Бой завершен!\n")
-	fmt.Printf("Ответ API: %s\n", result)
+	if err := checkResponse(resp); err != nil {
+		e.handleError(err)
+		return
+	}
+
+	fmt.Println("Бой завершен!")
+	fmt.Printf("Ответ API: %s\n", resp.Body)
 }

@@ -1,13 +1,27 @@
 package config
 
+import (
+	"errors"
+	"os"
+)
+
 type Config struct {
 	CharacterName string
 	AuthToken     string
 }
 
-func NewConfig() Config {
-	return Config{
-		CharacterName: "Buba",
-		AuthToken:     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRpbXVyMzMzOTlAdmsuY29tIiwicGFzc3dvcmRfY2hhbmdlZCI6bnVsbH0.qak98F18TUDBY8CLiK1ntzcD8SRGiGDhsgS916A1N1U",
+func NewConfigFromEnv() (Config, error) {
+	cfg := Config{
+		CharacterName: os.Getenv("ARTIFACTS_CHARACTER"),
+		AuthToken:     os.Getenv("ARTIFACTS_TOKEN"),
 	}
+
+	if cfg.CharacterName == "" {
+		return Config{}, errors.New("переменная ARTIFACTS_CHARACTER не найдена")
+	}
+	if cfg.AuthToken == "" {
+		return Config{}, errors.New("переменная ARTIFACTS_TOKEN не найдена")
+	}
+
+	return cfg, nil
 }

@@ -3,18 +3,22 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
 
-	"artifacts/config"
-	"artifacts/internal/api"
-	"artifacts/internal/commands"
+	"github.com/TimurKaif/artifacts/config"
+	"github.com/TimurKaif/artifacts/internal/commands"
+	"github.com/TimurKaif/artifacts/internal/transport"
 )
 
 func main() {
-	cfg := config.NewConfig()
-	client := api.NewClient(cfg)
+	cfg, err := config.NewConfigFromEnv()
+	if err != nil {
+		log.Fatalf("Ошибка конфигурации: %v", err)
+	}
+	client := transport.NewClient(cfg)
 	executor := commands.NewExecutor(client)
 
 	fmt.Println("Введите 'help' для списка команд")
@@ -43,7 +47,7 @@ func main() {
 		case "move":
 			if len(parts) != 3 {
 				fmt.Println("Использование: move X Y")
-				fmt.Println("   Пример: move 4 -1")
+				fmt.Println("Пример: move 4 -1")
 				continue
 			}
 
@@ -66,12 +70,12 @@ func main() {
 			printHelp()
 
 		case "exit", "quit", "q":
-			fmt.Println("До встречи!")
+			fmt.Println("Bye Bye!")
 			return
 
 		default:
 			fmt.Printf("Неизвестная команда: %s\n", cmd)
-			fmt.Println("   Введите 'help' для справки")
+			fmt.Println("Введите 'help' для справки")
 		}
 
 		fmt.Println()
